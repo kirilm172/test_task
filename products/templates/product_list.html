@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+
+{% block content %}  
+
+    <div style="text-align: center;">
+        <select id="category">  
+            <option>All</option>
+            {% for category in category_list %}
+                <option {% if category.name == cur_category %} selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="product_wrapper">
+        {% for product in page_obj %}
+            <div class="product" id="{{ product.id }}">
+                <b>{{ product.name }}</b><br><br>
+                <span id="extra_data">
+                    <br>
+                    <br>
+                </span>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div style="text-align: center;">
+        <span>
+            {% if page_obj.has_previous %}
+                <a href="?{% if cur_category %}category={{ cur_category }}&{% endif %}page=1">1</a>
+                ...
+                <a href="?{% if cur_category %}category={{ cur_category }}&{% endif %}page={{ page_obj.previous_page_number }}">previous</a>
+                ...
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                ...
+                <a href="?{% if cur_category %}category={{ cur_category }}&{% endif %}page={{ page_obj.next_page_number }}">next</a>
+                ...
+                <a href="?{% if cur_category %}category={{ cur_category }}&{% endif %}page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+            {% endif %}
+        </span>
+    </div>
+
+    <script>
+        $.getJSON("data?category={{ cur_category }}&page={{ page_obj.number }}", function( data ) {
+            for (i in data){
+                product = data[i]
+                console.log(product);
+                extradata = $('#' + product.id).children('#extra_data')
+                extradata.html('$' + product.price + '<br>');
+                if (product.status == 'in_stock'){
+                    extradata.html(extradata.html() + '<span style="color: green"> In stock </span> | Remains: ' + product.remains + '<br>');
+                } else {
+                    extradata.html(extradata.html() + '<span style="color: red"> Out of stock </span>');
+                }
+            }
+        });
+
+        $('#category').on('change', function() {
+            if (this.value == 'All'){
+                window.location.href = '?';
+            } else {
+                window.location.href = '?category=' + this.value;
+            }
+        });
+    </script>
+{% endblock %}
