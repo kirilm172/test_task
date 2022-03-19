@@ -1,11 +1,9 @@
-from statistics import mode
 from time import sleep
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.forms import model_to_dict
-import json
 
 from .models import Category, Product
 
