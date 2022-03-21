@@ -20,11 +20,11 @@ class Command(BaseCommand):
         categories = Category.objects.bulk_create([Category(name=f'category{i + 1}') for i in range(cc)])
 
         products_to_create = []
-        for i, category in enumerate(categories):
+        for i in range(cc):
             for j in range(pc):
                 product = Product(
                     name=f'product{(i + 1)*pc + j}',
-                    category = category,
+                    category = categories[i],
                     price = random.randint(0, 10000)/100,
                     status = random.choice(['in_stock', 'out_of_stock']),
                     remains = random.randint(0, 100)
